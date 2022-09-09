@@ -8,6 +8,8 @@ from pygments import unistring as uni
 
 from pygments.lexers.html import XmlLexer
 
+
+
 class CSharp6Lexer(RegexLexer):
     name = 'C#6'
     aliases = ['csharp6', 'c#6']
@@ -23,10 +25,12 @@ class CSharp6Lexer(RegexLexer):
     tokens = {
         'root': [
             # method names
-            (r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)'  # return type
-                r'(' + cs_ident + ')'                            # method name
-                r'(\s*)(\()',                               # signature start
-                bygroups(using(this), Name.Function, Text, Punctuation)),
+            (
+                r'^([ \t]*(?:' + cs_ident + r'(?:\[\])?\s+)+?)'  # return type
+                r'(' + cs_ident + ')'  # method name
+                r'(\s*)(\()',  # signature start
+                bygroups(using(this), Name.Function, Text, Punctuation),
+            ),
             (r'^\s*\[.*?\]', Name.Attribute),
             (r'[^\S\n]+', Text),
             (r'\\\n', Text),  # line continuation
@@ -38,14 +42,19 @@ class CSharp6Lexer(RegexLexer):
             (r'@\$?"(""|[^"])*"', String),
             (r'"\$?(\\\\|\\"|[^"\n])*["\n]', String),
             (r"'\\.'|'[^\\]'", String.Char),
-            (r"[0-9](\.[0-9]*)?([eE][+-][0-9]+)?"
-                r"[flFLdD]?|0[xX][0-9a-fA-F]+[Ll]?", Number),
-            (r'#[ \t]*(if|endif|else|elif|define|undef|'
+            (
+                r"[0-9](\.[0-9]*)?([eE][+-][0-9]+)?"
+                r"[flFLdD]?|0[xX][0-9a-fA-F]+[Ll]?",
+                Number,
+            ),
+            (
+                r'#[ \t]*(if|endif|else|elif|define|undef|'
                 r'line|error|warning|region|endregion|pragma)\b.*?\n',
-                Comment.Preproc),
-            (r'\b(extern)(\s+)(alias)\b', bygroups(Keyword, Text,
-                Keyword)),
-            (r'(abstract|as|async|await|base|break|case|catch|'
+                Comment.Preproc,
+            ),
+            (r'\b(extern)(\s+)(alias)\b', bygroups(Keyword, Text, Keyword)),
+            (
+                r'(abstract|as|async|await|base|break|case|catch|'
                 r'checked|const|continue|default|delegate|'
                 r'do|else|enum|event|explicit|extern|false|finally|'
                 r'fixed|for|foreach|goto|if|implicit|in|interface|'
@@ -56,10 +65,15 @@ class CSharp6Lexer(RegexLexer):
                 r'unchecked|unsafe|virtual|var|void|while|'
                 r'get|set|new|partial|yield|add|remove|value|alias|ascending|'
                 r'descending|from|group|into|orderby|select|where|'
-                r'join|equals)\b', Keyword),
+                r'join|equals)\b',
+                Keyword,
+            ),
             (r'(global)(::)', bygroups(Keyword, Punctuation)),
-            (r'(bool|byte|char|decimal|double|dynamic|float|int|long|object|'
-                r'sbyte|short|string|uint|ulong|ushort|var)\b\??', Keyword.Type),
+            (
+                r'(bool|byte|char|decimal|double|dynamic|float|int|long|object|'
+                r'sbyte|short|string|uint|ulong|ushort|var)\b\??',
+                Keyword.Type,
+            ),
             (r'(class|struct)(\s+)', bygroups(Keyword, Text), 'class'),
             (r'(namespace|using)(\s+)', bygroups(Keyword, Text), 'namespace'),
             (cs_ident, Name),
@@ -69,9 +83,9 @@ class CSharp6Lexer(RegexLexer):
             default('#pop'),
         ],
         'namespace': [
-            (r'(?=\()', Text, '#pop'),  # using (resource)
-            ('(' + cs_ident + r'|\.)+', Name.Namespace, '#pop'),
-        ]
+            (r'(?=\()', Text, '#pop'),
+            (f'({cs_ident}' + r'|\.)+', Name.Namespace, '#pop'),
+        ],
     }
         
 def setup(app):
